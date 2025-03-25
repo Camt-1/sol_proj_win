@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import "./IERC20Permit.sol";
+import "./interface/IERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
@@ -20,7 +20,7 @@ contract ERC20Permit is ERC20, IERC20Permit, EIP712 {
         keccak256("Permit(address owner,address spender, uint256 value,uint256 nonce,uint256 deadline)");
     
     //初始化EIP712的name以及ERC20的name和symbol
-    constractor(
+    constructor(
         string memory name,
         string memory symbol
     ) EIP712(name, "1") ERC20(name, symbol) {}
@@ -43,7 +43,7 @@ contract ERC20Permit is ERC20, IERC20Permit, EIP712 {
         bytes32 s
     ) public virtual override {
         //检查deadline
-        require(block.timestamp <= deadine, "ERC20Permit: expired deadline");
+        require(block.timestamp <= deadline, "ERC20Permit: expired deadline");
 
         //拼接Hash
         bytes32 structHash = keccak256(abi.encode(_PERMIT_TYPEHASH, owner, spender, value, _useNonce(owner), deadline));
@@ -71,7 +71,7 @@ contract ERC20Permit is ERC20, IERC20Permit, EIP712 {
     //消费nonce的函数,返回用户当前的nonce,并增加1
     function _useNonce(address owner) internal virtual returns (uint256 current) {
         current = _nonces[owner];
-        _nonce[owner] += 1;
+        _nonces[owner] += 1;
     }
 
     //铸造代币

@@ -27,7 +27,7 @@ contract SimpleSwap is ERC20 {
     constructor(
         IERC20 _token0,
         IERC20 _token1
-    ) ERC20("SimpleSwap", 55) {
+    ) ERC20("SimpleSwap", "camt") {
         token0 = _token0;
         token1 = _token1;
     }
@@ -58,7 +58,7 @@ contract SimpleSwap is ERC20 {
     //amount1Desired 添加的token1数量
     function addLiquidity(
         uint amount0Desired,
-        uint amount1Desired,
+        uint amount1Desired
     ) public returns (uint liquidity)
     {
         //添加的流动性转入Swap合约,需事先给Swap合约授权
@@ -73,7 +73,7 @@ contract SimpleSwap is ERC20 {
         } else {
             //如果不是第一次添加流动性,按添加代币的数量比例铸造LP,取两个代币更小的那个比例
             liquidity = min(amount0Desired * _totalSupply / reserve0,
-                amoount1Desired * _totalSupply / reserve1);
+                amount1Desired * _totalSupply / reserve1);
         }
 
         //检查铸造的LP数量
@@ -93,7 +93,7 @@ contract SimpleSwap is ERC20 {
     //转出数量 = (liquidity / totalSupply_LP) * reserve
     function removeLiquidity(uint liquidity)
         external
-        returns (uint amount0,int amount1) 
+        returns (uint amount0,uint amount1) 
     {
         //获取余额
         uint balance0 = token0.balanceOf(address(this));
@@ -125,7 +125,7 @@ contract SimpleSwap is ERC20 {
         function getAmountOut(
         uint amountIn,
         uint reserveIn,
-        uint reserveOut,
+        uint reserveOut
     ) public pure returns (uint amountOut)
     {
         require(amountIn > 0, "insufficinet_amount");
@@ -141,7 +141,7 @@ contract SimpleSwap is ERC20 {
         uint amountIn,
         IERC20 tokenIn,
         uint amountOutMin
-    ) external returns (amountOut, IERC20 tokenOut)
+    ) external returns (uint amountOut, IERC20 tokenOut)
     {
         require(amountIn > 0, "insufficient_output_amount");
         require(tokenIn == token0 || tokenIn == token1, "invalid_token");
@@ -153,7 +153,7 @@ contract SimpleSwap is ERC20 {
             //如果是token0交换token1
             tokenOut = token1;
             //计算能交换出的token1数量      
-            amountOut = getAmountOut(amountIn, balance0, balance1)
+            amountOut = getAmountOut(amountIn, balance0, balance1);
             require(amountOut > amountOutMin, "insufficient_output_amount");
             //进行交换
             tokenIn.transferFrom(msg.sender, address(this), amountIn);

@@ -18,8 +18,8 @@ contract TokenVesting {
     uint256 public immutable duration; //归属期(秒)
 
     constructor(
-        address beneficiaryAddress;
-        uint256 durationSerconda;
+        address beneficiaryAddress,
+        uint256 durationSeconds
     )
     {
         require(beneficiaryAddress != address(0), "VestingWallet: beneficiary is zero address");
@@ -32,7 +32,7 @@ contract TokenVesting {
     //调用vestedAmount()函数计算可提取的代币数量,然后transfer给受益人
     function release(address token) public {
         //调用vestedAmount()函数计算可提取的代币数量
-        uint256 releaseable = vestedAmount(token, uint256(block.timestamp)) - erc20Released[token];
+        uint256 releasable = vestedAmount(token, uint256(block.timestamp)) - erc20Released[token];
         //更新已释放代币数量
         erc20Released[token] += releasable;
         //转代币给受益人
@@ -43,12 +43,12 @@ contract TokenVesting {
     //根据线性释放公式,计算已经释放的数量
     function vestedAmount(address token, uint256 timestamp) public view returns (uint256) {
         //合约里总共收到了多少代币(当前余额 + 已经提取)
-        uint256 totalAllocation = IERC20(token).balanceOf(addrss(this)) += erc20Released[token];
+        uint256 totalAllocation = IERC20(token).balanceOf(address(this)) + erc20Released[token];
         //根据线性释放公式,计算已经释放的数量
         if (timestamp < start) {
             return 0;
         } else if (timestamp > start + duration) {
-            return totalAllocation
+            return totalAllocation;
         } else {
             return (totalAllocation * (timestamp - start)) / duration;
         }

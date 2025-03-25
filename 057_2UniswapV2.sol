@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import "./Lib.sol";
+import "./interface/Lib_Flashloan.sol";
 
 interface IUniswapV2Callee {
     function uniswapV2Call(

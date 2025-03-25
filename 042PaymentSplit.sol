@@ -11,7 +11,7 @@ contract PaymentSplit{
 
     mapping(address => uint256) public shares; //每个受益人的份额
     mapping(address => uint256) public released; //支付给每个受益人的金额
-    address[] public payee; //受益人数组
+    address[] public payees; //受益人数组
 
     constructor(address[] memory _payees,uint256[] memory _shares) payable {
         //检查_payees和_shares数组长度相同,且不为0
@@ -39,7 +39,7 @@ contract PaymentSplit{
         released[_account] += payment;
         //转账
         _account.transfer(payment);
-        emit PaymentReleased(_account, payment);
+        emit PaymentRelased(_account, payment);
     }
 
     //计算一个账户能够领取的eth,调用pendingPayment()函数
@@ -63,7 +63,7 @@ contract PaymentSplit{
 
     //新增受益人_account以及对应的份额_accountShares
     //只能在构造器中使用,不能修改
-    function _addPayee(address _accouont, uint256 _accountShares) private {
+    function _addPayee(address _account, uint256 _accountShares) private {
         //检查_account不为0地址
         require(_account != address(0), "PaymentSplitter: account is the zero address");
         //检查_accountShare不为0
@@ -73,7 +73,7 @@ contract PaymentSplit{
         //更新payees, shares和totalShares
         payees.push(_account);
         shares[_account] = _accountShares;
-        toatlShares += _accountShares;
+        totalShares += _accountShares;
         //释放新增受益人事件
         emit PayeeAdded(_account, _accountShares);
     }

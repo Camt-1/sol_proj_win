@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import "./IERC165.sol";
-import "./IERC721.sol";
-import "./IERC721Receiver.sol";
-import "./IERC721Metadata.sol";
-import "./String.sol";
+import "./interface/IERC165.sol";
+import "./interface/IERC721.sol";
+import "./interface/IERC721Receiver.sol";
+import "./interface/IERC721Metadata.sol";
+import "./interface/String.sol";
 
 contract ERC721 is IERC721,IERC721Metadata {
     using Strings for uint256;

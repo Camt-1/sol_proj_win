@@ -98,7 +98,7 @@ contract ProtectedBank {
     }
 
     //用重入锁保护有漏洞的函数
-    function withdraw() external nonReentrant {
+    function withdraw() external nonReentract {
         uint256 balance = balanceOf[msg.sender];
         require(balance > 0, "insufficient balance");
 

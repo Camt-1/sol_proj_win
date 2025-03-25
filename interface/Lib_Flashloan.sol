@@ -2,7 +2,7 @@
 pragma solidity ^0.8.26;
 
 interface IERC20 {
-    event Approval(address indexed owner, address indexed spender,uint value);
+    event Approval(address indexed owner, address indexed spender, uint value);
     event Transfer(address indexed from, address indexed to, uint value);
 
     function name() external view returns (string memory);
@@ -19,7 +19,7 @@ interface IERC20 {
 
 interface IUniswapV2Pair {
     function swap(
-        uint amount0Ount,
+        uint amount0Out,
         uint amount1Out,
         address to,
         bytes calldata data
@@ -38,14 +38,13 @@ interface IUniswapV2Factory {
 
 interface IETH is IERC20 {
     function deposit() external payable;
-
     function withdraw(uint amount) external;
 }
 
 library PoolAddress {
     bytes32 internal constant POOL_INIT_CODE_HASH =
         0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54;
-    
+
     struct Poolkey {
         address token0;
         address token1;
@@ -56,17 +55,16 @@ library PoolAddress {
         address tokenA,
         address tokenB,
         uint24 fee
-    ) external pure returns (PoolKey memory)
-    {
-        if (tokenA > tokenB) (tokenA, tokenB) = (toeknB, tokenA)
-        return PoolKey({token0: tokenA, token1: tokenB, fee: fee});
+    ) external pure returns (Poolkey memory) {
+        if (tokenA > tokenB) (tokenA, tokenB) = (tokenB, tokenA);
+        return Poolkey({token0: tokenA, token1: tokenB, fee: fee});
     }
 
     function computeAddress(
         address factory,
-        PoolKey memory key
+        Poolkey memory key
     ) internal pure returns (address pool) {
-        require(key.token0 < key.token1);
+        require(key.token0 < key.token1, "Invalid token order");
         pool = address(
             uint160(
                 uint(
@@ -74,7 +72,7 @@ library PoolAddress {
                         abi.encodePacked(
                             hex"ff",
                             factory,
-                            keccak256(abi.code(key.token0, key.token1, key, fee)),
+                            keccak256(abi.encodePacked(key.token0, key.token1, key.fee)),
                             POOL_INIT_CODE_HASH
                         )
                     )
@@ -84,7 +82,7 @@ library PoolAddress {
     }
 }
 
-interface IUinswapV3Pool {
+interface IUniswapV3Pool {
     function flash(
         address recipient,
         uint amount0,

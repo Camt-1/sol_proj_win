@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import "./IERC20.sol";
+import "./interface/IERC20.sol";
 
 contract ERC20 is IERC20 {
     mapping(address => uint256) public override balanceOf;
