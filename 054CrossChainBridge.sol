@@ -4,7 +4,9 @@ pragma solidity ^0.8.26;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+
 contract CrossChainToken is ERC20, Ownable {
+    
     event Bridge(address indexed user, uint256 amount);
     event Mint(address indexed to, uint256 amount);
 
